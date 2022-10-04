@@ -1,30 +1,16 @@
 package com.ll.exam.app__2022_10_04.app.jwt;
 
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.util.Base64;
 
 @Component
+@AllArgsConstructor
 public class JwtProvider {
+    private final SecretKey jwtSecretKey;
 
-    private SecretKey cachedSecretKey;
-    @Value("${custom.jwt.secretKey}")
-    private String secretKeyPlain;
-    public SecretKey _getSecretKey() {
-
-        String keyBase64Encoded = Base64.getEncoder().encodeToString(secretKeyPlain.getBytes());
-        return Keys.hmacShaKeyFor(keyBase64Encoded.getBytes());
-
-    }
-
-    public SecretKey getSecretKey(){
-
-        if(cachedSecretKey == null)  cachedSecretKey=_getSecretKey();
-
-        return cachedSecretKey;
-
+    public SecretKey getSecretKey() {
+        return jwtSecretKey;
     }
 }
