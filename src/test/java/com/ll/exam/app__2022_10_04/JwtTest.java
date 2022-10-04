@@ -1,9 +1,13 @@
 package com.ll.exam.app__2022_10_04;
 
+import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.crypto.SecretKey;
+import java.util.Base64;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -11,16 +15,24 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class JwtTest {
 
 	@Value("${custom.jwt.secretKey}")
-	private String secretKey;
+	private String secretKeyPlain;
 
 
 
 	@Test
 	@DisplayName("secretKey가 존재한다.")
 	void t1() {
-		assertThat(secretKey).isNotNull();
+		assertThat(secretKeyPlain).isNotNull();
 	}
 
+	@Test
+	@DisplayName("sercretKey 원문으로 hmac 암호화 알고리즘에 맞는 SecretKey 객체를 만들 수 있다.")
+	void t2() {
+		String keyBase64Encoded = Base64.getEncoder().encodeToString(secretKeyPlain.getBytes());
+		SecretKey secretKey = Keys.hmacShaKeyFor(keyBase64Encoded.getBytes());
+
+		assertThat(secretKey).isNotNull();
+	}
 }
 
 
